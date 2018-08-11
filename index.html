@@ -3,24 +3,27 @@
 <head>
 	<style>
 
-html, body {
+html, body, div, p, button {
 	margin: 0;
 	padding: 0;
 }
 
 .off {
-	background-color: green;
+	background-color: #500;
 	color: red;
 }
 
 .on {
-	background-color: red;
-	color: green;
+	background-color: #a00;
+	color: yellow;
 }
 
 button {
 	border-radius: 0;
 	padding: 100px;
+	width: 25%;
+	float: left;
+	height: 200px;
 }
 
 	</style>
@@ -31,7 +34,7 @@ button {
 
 <button id="tap">TAP</button>
 <button id="tap-start">TAP-START</button>
-<button id="tap-start">START (RESET)</button>
+<button id="start">START (RESET)</button>
 <button id="stop-continue">STOP | CONTINUE</button>
 
 <script>
@@ -39,10 +42,16 @@ button {
 	var bpm = document.getElementById('bpm');
 	var buttonTap = document.getElementById('tap');
 	var buttonTapStart = document.getElementById('tap-start');
-	var stopContinue = document.getElementById('stop-continue');
+	var buttonStart = document.getElementById('start');
+	var buttonStopContinue = document.getElementById('stop-continue');
 	var timer = setInterval(interval,1);
 
 	buttonTap.addEventListener('click', tap);
+	buttonTapStart.addEventListener('click',tapStart);
+	buttonStart.addEventListener('click',start);
+	buttonStopContinue.addEventListener('click',stopContinue);
+
+	var running = false;
 
 	var _BPM = -1;
 	var _MSB = -1;
@@ -50,28 +59,50 @@ button {
 	var theni = 0;
 	var partyPals = [];
 	var maxPartyPals = 3;
+	var displayState = false;
+	var iter = 0;
 
 	function interval() {
+
+		if (!running)
+			return;
 
 		var now = new Date().getTime();
 		var diff = now - theni;
 
+		if (diff < (_MSB / 2) && displayState == false) { // might be slow
+			displayState = true;
+			bpm.classList.remove('off')
+			bpm.classList.add('on')
+		}
+
 		if (diff > (_MSB / 2)) {
+			console.log("STARP");
+			displayState = false;
 			bpm.classList.add('off');
 			bpm.classList.remove('on');
 		}
 
-		if (diff > _MSB) {
+		if (diff >= _MSB) {
+			console.log("NOPE");
+			displayState = true;
 			theni = now;
-			bpm.innerHTML = _BPM;
+			bpm.innerHTML = _BPM + ' ' + iter;
 			bpm.classList.add('on');
 			bpm.classList.remove('off');
+
+			iter++;
 		}
 
 	}
 
+	// tap button
 	function tap(e) {
+		_tap();
+	}
 
+	// tap event
+	function _tap() {
 		var now = new Date().getTime();
 
 		partyPals.push(now - thent);
@@ -100,6 +131,26 @@ button {
 		thent = now;
 
 	}
+
+	// tap start button
+	function tapStart() {
+		_tap();
+		start();
+	}
+
+	// force 'start' command start seq
+	function start() {
+
+		if (!running)
+			running = true;
+
+		theni = new Date().getTime();
+	}
+
+	function stopContinue() {
+		running = !running;
+	}
+
 
 </script>
 

@@ -1,0 +1,29 @@
+
+html, body, div, p, button {
+	margin: 0;
+	padding: 0;
+}
+
+.off {
+	background-color: #500;
+	color: red;
+}
+
+.on {
+	background-color: #a00;
+	color: yellow;
+}
+
+#indicator p {
+	font-family: courier, monospace;
+	font-size: 3em;
+	display: inline-block;
+}
+
+button {
+	border-radius: 0;
+	padding: 100px;
+	width: 25%;
+	float: left;
+	height: 200px;
+}

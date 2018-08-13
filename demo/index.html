@@ -1,32 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<style>
-
-html, body, div, p, button {
-	margin: 0;
-	padding: 0;
-}
-
-.off {
-	background-color: #500;
-	color: red;
-}
-
-.on {
-	background-color: #a00;
-	color: yellow;
-}
-
-button {
-	border-radius: 0;
-	padding: 100px;
-	width: 25%;
-	float: left;
-	height: 200px;
-}
-
-	</style>
+	<link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
 
@@ -38,10 +13,16 @@ button {
 
 </div>
 
-<button id="tap">TAP</button>
-<button id="tap-start">TAP-START</button>
-<button id="start">START (RESET)</button>
-<button id="stop-continue" disabled>STOP/CONTINUE</button>
+<div>
+	<button id="tap">TAP</button>
+	<button id="tap-start">TAP-START</button>
+	<button id="start">START (RESET)</button>
+	<button id="stop-continue" disabled>STOP/CONTINUE</button>
+</div>
+
+<div>
+	<button id="reset">RESET</button>
+</div>
 
 <script src="js/thumper.js"></script>
 

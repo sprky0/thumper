@@ -30,138 +30,20 @@ button {
 </head>
 <body>
 
-<div id="indicator" class="off"><p id="bpm">120</p></div>
+<div id="indicator" class="off">
+
+	<p id="bpm">120.00</p>
+	<p id="clock-message"></p>
+	<p id="start-stop-message"></p>
+
+</div>
 
 <button id="tap">TAP</button>
 <button id="tap-start">TAP-START</button>
 <button id="start">START (RESET)</button>
 <button id="stop-continue" disabled>STOP/CONTINUE</button>
 
-<script>
-
-	var bpm = document.getElementById('bpm');
-	var buttonTap = document.getElementById('tap');
-	var buttonTapStart = document.getElementById('tap-start');
-	var buttonStart = document.getElementById('start');
-	var buttonStopContinue = document.getElementById('stop-continue');
-	var timer = setInterval(interval,1);
-
-	buttonTap.addEventListener('click', tap);
-	buttonTapStart.addEventListener('click',tapStart);
-	buttonStart.addEventListener('click',start);
-	buttonStopContinue.addEventListener('click',stopContinue);
-
-	var running = false;
-
-	var _BPM = 120.0;
-	var _MSB = (60 * 1000) / 120;
-	var thent = 0;
-	var theni = 0;
-	var partyPals = [];
-	var maxPartyPals = 3;
-	var displayState = false;
-	var iter = 0;
-
-	function interval() {
-
-		if (!running)
-			return;
-
-		var now = new Date().getTime();
-		var diff = now - theni;
-		var _halfMSB = _MSB / 2;
-
-		if (diff < _halfMSB && displayState == false) {
-			displayState = true;
-			bpm.classList.remove('off')
-			bpm.classList.add('on')
-		}
-
-		if (diff > _halfMSB && displayState == true) {
-			displayState = false;
-			bpm.classList.add('off');
-			bpm.classList.remove('on');
-		}
-
-		if (diff >= _MSB) {
-			displayState = true;
-			theni = now;
-			bpm.classList.add('on');
-			bpm.classList.remove('off');
-			iter++;
-		}
-
-	}
-
-	function updateDisplay() {
-		bpm.innerHTML = _BPM.toFixed(2) + ' ' + iter;
-	}
-
-	// tap button
-	function tap(e) {
-		_tap();
-	}
-
-	// tap event
-	function _tap() {
-
-		var now = new Date().getTime();
-
-		if (!thent) {
-			thent = now;
-			return;
-		}
-
-		partyPals.push(now - thent);
-
-		while (partyPals.length > maxPartyPals) {
-			partyPals.shift();
-		}
-
-		var avg = 0;
-
-		for(var i = 0; i < partyPals.length; i++) {
-			avg += partyPals[i];
-		}
-
-		avg = avg / partyPals.length;
-
-		console.log(avg);
-		console.log(partyPals);
-
-		_BPM = (60 * 1000) / avg;
-		_MSB = avg;
-
-		console.log(_MSB);
-		console.log(_BPM);
-
-		thent = now;
-
-	}
-
-	// tap start button
-	function tapStart() {
-		_tap();
-		start();
-	}
-
-	// force 'start' command start seq
-	function start() {
-
-		buttonStopContinue.disabled = false;
-
-		if (!running)
-			running = true;
-
-		theni = new Date().getTime();
-	}
-
-	function stopContinue(e) {
-		running = !running;
-		buttonStopContinue.innerHTML = !running ? "CONTINUE" : "STOP";
-	}
-
-</script>
+<script src="js/thumper.js"></script>
 
 </body>
 </html>

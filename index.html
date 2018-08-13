@@ -3,107 +3,163 @@
 <head>
 	<style>
 
-html, body {
+html, body, div, p, button {
 	margin: 0;
 	padding: 0;
 }
 
 .off {
-	background-color: green;
+	background-color: #500;
 	color: red;
 }
 
 .on {
-	background-color: red;
-	color: green;
+	background-color: #a00;
+	color: yellow;
 }
 
 button {
 	border-radius: 0;
 	padding: 100px;
+	width: 25%;
+	float: left;
+	height: 200px;
 }
 
 	</style>
 </head>
 <body>
 
-<div id="indicator" class="off"><p id="bpm">?</p></div>
+<div id="indicator" class="off"><p id="bpm">120</p></div>
 
 <button id="tap">TAP</button>
 <button id="tap-start">TAP-START</button>
-<button id="tap-start">START (RESET)</button>
-<button id="stop-continue">STOP | CONTINUE</button>
+<button id="start">START (RESET)</button>
+<button id="stop-continue" disabled>STOP/CONTINUE</button>
 
 <script>
 
-	function thumper() {
+	var bpm = document.getElementById('bpm');
+	var buttonTap = document.getElementById('tap');
+	var buttonTapStart = document.getElementById('tap-start');
+	var buttonStart = document.getElementById('start');
+	var buttonStopContinue = document.getElementById('stop-continue');
+	var timer = setInterval(interval,1);
 
-		var bpm = document.getElementById('bpm');
-		var buttonTap = document.getElementById('tap');
-		var buttonTapStart = document.getElementById('tap-start');
-		var stopContinue = document.getElementById('stop-continue');
-		var timer = setInterval(interval,1);
+	buttonTap.addEventListener('click', tap);
+	buttonTapStart.addEventListener('click',tapStart);
+	buttonStart.addEventListener('click',start);
+	buttonStopContinue.addEventListener('click',stopContinue);
 
-		buttonTap.addEventListener('click', tap);
+	var running = false;
 
-		var _BPM = -1;
-		var _MSB = -1;
-		var thent = 0;
-		var theni = 0;
-		var partyPals = [];
-		var maxPartyPals = 3;
+	var _BPM = 120.0;
+	var _MSB = (60 * 1000) / 120;
+	var thent = 0;
+	var theni = 0;
+	var partyPals = [];
+	var maxPartyPals = 3;
+	var displayState = false;
+	var iter = 0;
 
-		function interval() {
+	function interval() {
 
-			var now = new Date().getTime();
-			var diff = now - theni;
+		if (!running)
+			return;
 
-			if (diff > (_MSB / 2)) {
-				bpm.classList.add('off');
-				bpm.classList.remove('on');
-			}
+		var now = new Date().getTime();
+		var diff = now - theni;
+		var _halfMSB = _MSB / 2;
 
-			if (diff > _MSB) {
-				theni = now;
-				bpm.innerHTML = _BPM;
-				bpm.classList.add('on');
-				bpm.classList.remove('off');
-			}
-
+		if (diff < _halfMSB && displayState == false) {
+			displayState = true;
+			bpm.classList.remove('off')
+			bpm.classList.add('on')
 		}
 
-		function tap(e) {
+		if (diff > _halfMSB && displayState == true) {
+			displayState = false;
+			bpm.classList.add('off');
+			bpm.classList.remove('on');
+		}
 
-			var now = new Date().getTime();
+		if (diff >= _MSB) {
+			displayState = true;
+			theni = now;
+			bpm.classList.add('on');
+			bpm.classList.remove('off');
+			iter++;
+		}
 
-			partyPals.push(now - thent);
+	}
 
-			while (partyPals.length > maxPartyPals) {
-				partyPals.shift();
-			}
+	function updateDisplay() {
+		bpm.innerHTML = _BPM.toFixed(2) + ' ' + iter;
+	}
 
-			var avg = 0;
+	// tap button
+	function tap(e) {
+		_tap();
+	}
 
-			for(var i = 0; i < partyPals.length; i++) {
-				avg += partyPals[i];
-			}
+	// tap event
+	function _tap() {
 
-			avg = avg / partyPals.length;
+		var now = new Date().getTime();
 
-			console.log(avg);
-			console.log(partyPals);
-
-			_BPM = (60 * 1000) / avg;
-			_MSB = avg;
-
-			console.log(_MSB);
-			console.log(_BPM);
-
+		if (!thent) {
 			thent = now;
-
+			return;
 		}
 
-	} // thumper constructor
+		partyPals.push(now - thent);
+
+		while (partyPals.length > maxPartyPals) {
+			partyPals.shift();
+		}
+
+		var avg = 0;
+
+		for(var i = 0; i < partyPals.length; i++) {
+			avg += partyPals[i];
+		}
+
+		avg = avg / partyPals.length;
+
+		console.log(avg);
+		console.log(partyPals);
+
+		_BPM = (60 * 1000) / avg;
+		_MSB = avg;
+
+		console.log(_MSB);
+		console.log(_BPM);
+
+		thent = now;
+
+	}
+
+	// tap start button
+	function tapStart() {
+		_tap();
+		start();
+	}
+
+	// force 'start' command start seq
+	function start() {
+
+		buttonStopContinue.disabled = false;
+
+		if (!running)
+			running = true;
+
+		theni = new Date().getTime();
+	}
+
+	function stopContinue(e) {
+		running = !running;
+		buttonStopContinue.innerHTML = !running ? "CONTINUE" : "STOP";
+	}
 
 </script>
 

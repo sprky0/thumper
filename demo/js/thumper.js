@@ -115,7 +115,7 @@
 		var diff = now - thent;
 
 		// if we waited too long, our data is crap, GTFO / start over
-		if (diff > (_MSB * 2)) {
+		if (diff > (_MSB * 8)) {
 			partyPals = [];
 			thent = now;
 			return;

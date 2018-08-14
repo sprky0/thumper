@@ -100,7 +100,7 @@
 	}
 
 	function changeSubdivision(e) {
-		console.log(e);
+		TAPMULT = parseFloat(e.srcElement.value);
 	}
 
 	// messages:
@@ -178,6 +178,9 @@
 		}
 
 		avg = avg / partyPals.length;
+
+		// 1-1 = 1/4 note tap 1/1.5 = tapping a dotted quarter. .. i think maybe
+		avg = avg * (1 / TAPMULT);
 
 		console.log(avg);
 		console.log(partyPals);

@@ -13,7 +13,6 @@
 
 	var timer = setInterval(interval,1);
 
-
 	buttonReset.addEventListener('mousedown', reset);
 	buttonTap.addEventListener('mousedown', tap);
 	buttonTapStart.addEventListener('mousedown',tapStart);
@@ -24,6 +23,16 @@
 
 	var _BPM = 120.0;
 	var _MSB = (60 * 1000) / 120;
+
+	var TPQN = 24; // 24 ticks per quarter note
+
+	// my understanding / assumptinon about midi clock is that it doesn't really know about time sigs.  it's 24 ticket per 1/4 note a gogo forever ? maybe?]
+	// based on that assumption, we can assign a multiplier to the tap duration and figure out what a 1/4 length is relative to that:
+
+	// var TAPMULT = 0.5; // 0.5 = user is tapping 1/8 notes, maybe music is a halftime feel?  or 7/8 or 3/8 or something
+	var TAPMULT = 1; // 1 = user is tapping 1/4 notes
+	// var TAPMULT = 1.5; // 1 = user is tapping dotted 1/4 notes, eg: 12/8 or 6/8 time
+	// @todo implement this
 
 	var curTick = 0;
 	var lastTick = 0; // 0-23 (24 ticks / beat)
@@ -44,7 +53,7 @@
 		var now = new Date().getTime();
 		var diff = now - theni;
 		var _halfMSB = _MSB / 2;
-		var _ppqnMS  = _MSB / 24; // MS per 1/24th quarternote tick
+		var _ppqnMS  = _MSB / TPQN; // MS per 1/Nth quarternote tick
 
 		// handle display state
 

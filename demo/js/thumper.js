@@ -10,6 +10,7 @@
 	var buttonStart = document.getElementById('start');
 	var buttonStopContinue = document.getElementById('stop-continue');
 	var buttonReset = document.getElementById('reset');
+	var selectSubdivision = document.getElementById('subdivision-select');
 
 	var timer = setInterval(interval,1);
 
@@ -18,13 +19,18 @@
 	buttonTapStart.addEventListener('mousedown',tapStart);
 	buttonStart.addEventListener('mousedown',start);
 	buttonStopContinue.addEventListener('mousedown',stopContinue);
+	selectSubdivision.addEventListener('change',changeSubdivision);
 
 	var running = false;
 
+	// Tapped BPM
 	var _BPM = 120.0;
+
+	// Tapped BPM
 	var _MSB = (60 * 1000) / 120;
 
-	var TPQN = 24; // 24 ticks per quarter note
+	// Number of ticks per quarter note (standard is 24, some synths may use 12 or 48)
+	var TPQN = 24;
 
 	// my understanding / assumptinon about midi clock is that it doesn't really know about time sigs.  it's 24 ticket per 1/4 note a gogo forever ? maybe?]
 	// based on that assumption, we can assign a multiplier to the tap duration and figure out what a 1/4 length is relative to that:
@@ -33,6 +39,12 @@
 	var TAPMULT = 1; // 1 = user is tapping 1/4 notes
 	// var TAPMULT = 1.5; // 1 = user is tapping dotted 1/4 notes, eg: 12/8 or 6/8 time
 	// @todo implement this
+
+
+
+
+
+
 
 	var curTick = 0;
 	var lastTick = 0; // 0-23 (24 ticks / beat)
@@ -87,16 +99,11 @@
 
 	}
 
-	function _updateDisplay() {
-		bpm.innerHTML = _BPM.toFixed(2);
-		buttonStopContinue.innerHTML = !running ? "CONTINUE" : "STOP";
+	function changeSubdivision(e) {
+		console.log(e);
 	}
 
 	// messages:
-	// start
-	// stop
-	// continue
-
 	/*
 		clock (decimal 248, hex 0xF8)
 		start (decimal 250, hex 0xFA)
@@ -108,6 +115,33 @@
 	function tap(e) {
 		_updateDisplay();
 		_tap();
+	}
+
+	// tap start button
+	function tapStart(e) {
+		_tap();
+		_start();
+		_updateDisplay();
+	}
+
+	// press button start
+	function start(e) {
+		_start();
+		_updateDisplay();
+	}
+
+	function stopContinue(e) {
+		_stopContinue();
+		_updateDisplay();
+	}
+
+	function reset(e) {
+		// _reset();
+
+		partyPals = [];
+		thent = false;
+
+		_updateDisplay();
 	}
 
 	// tap 'event' (from any tempo tapping button)
@@ -158,33 +192,10 @@
 
 	}
 
-	// tap start button
-	function tapStart() {
-		_tap();
-		_start();
-		_updateDisplay();
+	function _updateDisplay() {
+		bpm.innerHTML = _BPM.toFixed(2);
+		buttonStopContinue.innerHTML = !running ? "CONTINUE" : "STOP";
 	}
-
-	// press button start
-	function start() {
-		_start();
-		_updateDisplay();
-	}
-
-	function stopContinue(e) {
-		_stopContinue();
-		_updateDisplay();
-	}
-
-	function reset() {
-		// _reset();
-
-		partyPals = [];
-		thent = false;
-
-		_updateDisplay();
-	}
-
 
 	function _stopContinue() {
 

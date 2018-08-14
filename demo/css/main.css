@@ -21,9 +21,20 @@ html, body, div, p, button {
 }
 
 button {
+	box-sizing: border-box;
 	border-radius: 0;
-	padding: 100px;
 	width: 25%;
 	float: left;
 	height: 200px;
+	display: inline-block;
+}
+
+#subdivision-select {
+	font-size: 4em;
+	box-sizing: border-box;
+	display: inline-block;
+	width: 25%;
+	margin: 0; padding: 0;
+	height: 200px;
+	vertical-align: middle;
 }

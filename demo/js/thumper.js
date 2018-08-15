@@ -40,12 +40,6 @@
 	// var TAPMULT = 1.5; // 1 = user is tapping dotted 1/4 notes, eg: 12/8 or 6/8 time
 	// @todo implement this
 
-
-
-
-
-
-
 	var curTick = 0;
 	var lastTick = 0; // 0-23 (24 ticks / beat)
 
@@ -207,6 +201,8 @@
 		// MIDI HERE:
 		// if (!running) MIDI :: send continue (decimal 251, hex 0xFB)
 		// else if (running) MIDI :: send stop (decimal 252, hex 0xFC)
+		_sendMessage(running ? 0xFC : 0xFB);
+
 	}
 
 
@@ -222,15 +218,24 @@
 
 		// MIDI HERE:
 		// MIDI :: send start (decimal 250, hex 0xFA)
+		_sendMessage(0xFA);
+
 	}
 
 	function _timecode() {
 
 		// MIDI HERE:
 		// MIDI :: send clock (decimal 248, hex 0xF8)
+		_sendMessage(0xF8);
 
 		clockMessage.innerHTML = ((curTick+"").length < 2 ? '0' : '') + curTick + "/24";
 	}
 
+	/**
+	 * In actual implementation, serial write to the output pin, for now just log
+	 */
+	function _sendMessage(message) {
+		// console.log(message);
+	}
 
 })();
